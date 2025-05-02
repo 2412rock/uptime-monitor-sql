@@ -1,0 +1,79 @@
+-- Check if the database exists, if not, create it
+IF NOT EXISTS (SELECT 1 FROM sys.databases WHERE name = 'UptimeMonitorDB')
+BEGIN
+    CREATE DATABASE UptimeMonitorDB;
+END;
+GO
+
+-- Switch to the UptimeMonitorDB
+USE UptimeMonitorDB;
+GO
+
+-- Create Users table if it does not exist
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Users')
+BEGIN
+    CREATE TABLE Users (
+        UserId INT IDENTITY(1,1) PRIMARY KEY,
+        FirstName NVARCHAR(50) NOT NULL,
+        LastName NVARCHAR(50) NOT NULL,
+        Email NVARCHAR(255),
+        Password NVARCHAR(255) NOT NULL
+    );
+END;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Monitors')
+BEGIN
+    CREATE TABLE Monitors (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        Email NVARCHAR(50) NOT NULL,
+        MonitorName NVARCHAR(255) NOT NULL,
+        MonitorType NVARCHAR(50) NOT NULL, --http/https/ping/ws/wss
+        HttpMethod NVARCHAR(255),
+        CheckCertificate BIT NOT NULL,
+        Url NVARCHAR(255) NOT NULL,
+        IsDownMessage NVARCHAR(255),
+        CheckInterval INT NOT NULL,
+    );
+END;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Users' AND COLUMN_NAME = 'NotificationToken')
+BEGIN
+    ALTER TABLE Users
+    ADD NotificationToken NVARCHAR(255)
+END
+
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Monitors' AND COLUMN_NAME = 'IsUp')
+BEGIN
+    ALTER TABLE Monitors
+    ADD IsUp BIT NOT NULL DEFAULT 0
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Monitors' AND COLUMN_NAME = 'RequestBody')
+BEGIN
+    ALTER TABLE Monitors
+    ADD RequestBody NVARCHAR(MAX)
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Monitors' AND COLUMN_NAME = 'LastChecked')
+BEGIN
+    ALTER TABLE Monitors
+    ADD LastChecked DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME();
+END
+
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'UserSessions')
+BEGIN
+    CREATE TABLE UserSessions (
+    SessionId INT PRIMARY KEY IDENTITY,
+    Email NVARCHAR(50) NOT NULL,
+    SessionToken NVARCHAR(255) NOT NULL,
+    LastActiveTime DATETIME NOT NULL,
+    IsActive BIT NOT NULL,
+);
+
+END;
+GO
+
