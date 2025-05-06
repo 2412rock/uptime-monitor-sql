@@ -64,8 +64,8 @@ CREATE TABLE Orders (
     Email NVARCHAR(255) NOT NULL,
     ProductId INT NOT NULL DEFAULT 0,
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    StripeOrderId NVARCHAR(255) NOT NULL UNIQUE,
-    SubscriptionId NVARCHAR(255) UNIQUE,
+    StripeOrderId NVARCHAR(255) NOT NULL,
+    SubscriptionId NVARCHAR(255),
     TransactionFinalized BIT NOT NULL DEFAULT 0,
 );
 END;
