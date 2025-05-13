@@ -10,6 +10,18 @@ USE UptimeMonitorDB;
 GO
 
 -- Create Users table if it does not exist
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Flags')
+BEGIN
+    CREATE TABLE Flags (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        FlagName NVARCHAR(50) NOT NULL,
+        FlagValue BIT NOT NULL DEFAULT 0
+    );
+END;
+GO
+
+
+-- Create Users table if it does not exist
 IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Users')
 BEGIN
     CREATE TABLE Users (
