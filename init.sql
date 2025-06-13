@@ -20,6 +20,15 @@ BEGIN
 END;
 GO
 
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'PushNotifications')
+BEGIN
+    CREATE TABLE PushNotifications (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        Email NVARCHAR(255) NOT NULL,
+        NotificationToken NVARCHAR(255)
+    );
+END;
+GO
 
 -- Create Users table if it does not exist
 IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Users')
