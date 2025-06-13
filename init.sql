@@ -75,6 +75,7 @@ BEGIN
         Url NVARCHAR(255) NOT NULL,
         IsDownMessage NVARCHAR(255),
         CheckInterval INT NOT NULL,
+        Notified BIT NOT NULL DEFAULT 0
     );
 END;
 GO
